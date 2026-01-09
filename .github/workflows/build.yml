@@ -1,17 +1,16 @@
-name: Build APK
+name: Build
 on: [push, workflow_dispatch]
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      - name: Build with Buildozer
+      - name: Build APK
         uses: ArtemSerebrennkov/buildozer-action@v1
         with:
           buildozer_version: master
-          workdir: .
-      - name: Upload APK
+      - name: Upload
         uses: actions/upload-artifact@v2
         with:
-          name: package
+          name: MyAPK
           path: bin/*.apk
