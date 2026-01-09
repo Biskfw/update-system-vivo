@@ -9,6 +9,7 @@ jobs:
         uses: ArtemSerebrennkov/buildozer-action@v1
         with:
           buildozer_version: master
+          workdir: .
       - name: Upload APK
         uses: actions/upload-artifact@v2
         with:
