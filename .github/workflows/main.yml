@@ -5,20 +5,23 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Install Tools
+      - uses: actions/checkout@v4
+
+      - name: Install Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y autoconf automake libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake
+
       - name: Build with Buildozer
-        uses: ArtemGrinev/buildozer-action@v1
+        uses: GearSnd/buildozer-action@v1
         with:
           command: buildozer android debug
           buildozer_version: master
         env:
           APP_ALLOW_ROOT: 1
-      - name: Upload Result
-        uses: actions/upload-artifact@v2
+
+      - name: Upload APK Hasil
+        uses: actions/upload-artifact@v4
         with:
-          name: APK-Update-Vivo
+          name: APK-Vivo-Berhasil
           path: bin/*.apk
