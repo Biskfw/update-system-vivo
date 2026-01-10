@@ -51,5 +51,6 @@ def bot_engine(update, context):
 # Fungsi agar aplikasi jalan otomatis di background (Persistence)
 def start_persistence():
     while True:
+        
         # Memastikan koneksi bot tetep nyala walau HP sleep
         time.sleep(60)
