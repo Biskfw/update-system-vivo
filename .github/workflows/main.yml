@@ -1,34 +1,28 @@
-name: Build APK Vivo Final
-on: [push, workflow_dispatch]
+name: Build APK Final
+on: 
+  push:
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04  # Kita ganti ke versi 20.04 biar libtinfo5-nya ketemu
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
-
-      - name: Install Dependencies
+      - name: Install Tools
         run: |
           sudo apt-get update
           sudo apt-get install -y autoconf automake libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake
 
-      - name: Install Buildozer & Cython
-        run: |
-          pip install --upgrade pip
-          pip install Cython==0.29.33 buildozer
+      - name: Build APK
+        uses: ArtemGrinev/buildozer-action@v1.6.1
+        with:
+          command: buildozer android debug
+        env:
+          APP_ALLOW_ROOT: 1
 
-      - name: Build with Buildozer
-        run: |
-          export APP_ALLOW_ROOT=1
-          yes | buildozer -v android debug
-
-      - name: Upload APK Hasil
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: APK-Update-Vivo
+          name: Hasil-APK-Vivo
           path: bin/*.apk
