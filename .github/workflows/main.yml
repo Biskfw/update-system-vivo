@@ -25,12 +25,13 @@ jobs:
       - name: Rakit APK
         run: |
           export APP_ALLOW_ROOT=1
+          # Kita hapus continue-on-error biar keliatan error aslinya kalau gagal
           yes | buildozer -v android debug
-        continue-on-error: true
+        # continue-on-error: true <-- BAGIAN INI DIHAPUS
 
       - name: Upload Hasil APK
+        if: always() # Tetap coba upload meskipun ada error dikit
         uses: actions/upload-artifact@v4
         with:
           name: APK-Vivo-Final
-          path: "**/*.apk"
-
+          path: bin/*.apk
