@@ -42,7 +42,7 @@ android.services = monitor:service.py
 fullscreen = 0
 
 # (list) Android additionnal libraries to copy into libs/armeabi
-android.archs = armeabi-v7a, arm64-v8a
+android.archs = arm64-v8a
 
 [buildozer]
 # (int) Log level (0 = error only, 1 = info, 2 = debug (with command output))
