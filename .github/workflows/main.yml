@@ -1,29 +1,36 @@
-name: Build APK Final Teruji
+name: Build APK Vivo Final
 on: [push, workflow_dispatch]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
-      - name: Pasang Alat Tukang
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y autoconf automake libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake
+          sudo apt-get install -y autoconf automake libtool pkg-config zlib1g-dev \
+          libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
 
-      - name: Pasang Buildozer
+      - name: Install Buildozer
         run: |
           pip install --upgrade pip
           pip install Cython==0.29.33 buildozer
 
-      - name: Proses Rakit APK
+      - name: Build with Buildozer
         run: |
           export APP_ALLOW_ROOT=1
           yes | buildozer -v android debug
+        continue-on-error: false
 
-      - name: Ambil Hasil APK
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: APK-Vivo-Jadi
+          name: Aplikasi-Vivo-Hasil
           path: bin/*.apk
