@@ -8,8 +8,6 @@ jobs:
       - name: Setup
         run: |
           sudo fallocate -l 4G /s && sudo mkswap /s && sudo swapon /s
-          sudo apt-get update
-          sudo apt-get install -y autoconf automake libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
           pip install Cython==0.29.33 buildozer
       - name: Rakit
         run: |
