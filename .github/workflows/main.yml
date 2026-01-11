@@ -21,7 +21,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y autoconf automake libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
           pip install Cython==0.29.33 buildozer
-          # Paksa setuju lisensi sebelum rakit
           mkdir -p ~/.android
           touch ~/.android/repositories.cfg
           yes | sdkmanager --licenses || true
@@ -31,9 +30,8 @@ jobs:
           export APP_ALLOW_ROOT=1
           yes | buildozer -v android debug
 
-- name: Upload Hasil APK
-  uses: actions/upload-artifact@v4
-  with:
-    name: APK-Vivo-Final
-    path: "**/*.apk"
-
+      - name: Upload Hasil APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: APK-Vivo-Final
+          path: "**/*.apk"
