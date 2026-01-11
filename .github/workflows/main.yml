@@ -28,9 +28,9 @@ jobs:
           yes | buildozer -v android debug
         continue-on-error: true
 
-            - name: Upload Hasil APK
+      - name: Upload Hasil APK
         uses: actions/upload-artifact@v4
         with:
           name: APK-Vivo-Final
-          # Kode ini bakal nyari file .apk di mana pun dia berada
           path: "**/*.apk"
+
