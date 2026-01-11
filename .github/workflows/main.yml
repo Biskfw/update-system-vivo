@@ -1,20 +1,26 @@
-name: Build-APK
+name: Build-APK-Vivo
 on: [push, workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - name: Setup
+
+      - name: Pasang Alat Tempur
         run: |
-          sudo fallocate -l 4G /s && sudo mkswap /s && sudo swapon /s
+          sudo apt-get update
+          sudo apt-get install -y autoconf automake libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
           pip install Cython==0.29.33 buildozer
-      - name: Rakit
+
+      - name: Rakit APK
         run: |
           export APP_ALLOW_ROOT=1
-          buildozer -v android debug
-      - name: Upload
+          # Perintah ini bakal otomatis download SDK & NDK yang ilang
+          yes | buildozer -v android debug
+        continue-on-error: false
+
+      - name: Upload Hasil
         uses: actions/upload-artifact@v4
         with:
-          name: Hasil-APK
+          name: APK-Vivo-Jadi
           path: bin/*.apk
