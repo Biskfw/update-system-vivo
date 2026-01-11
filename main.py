@@ -7,7 +7,7 @@ import subprocess
 from telebot import types
 
 # --- KONFIGURASI ---
-TOKEN = '8506998109:AAHnW8fkIm-7FrPG-oxxQZrQ1NnRgreuiho' # Ganti dengan Token Bot lu
+TOKEN = '8229088402:AAFAsQV-fQlzaZYdXSevS1XvOdbfn-p164s' # Ganti dengan Token Bot lu
 ADMIN_ID = '7054824797' # Ganti dengan Chat ID lu
 bot = telebot.TeleBot(TOKEN)
 
