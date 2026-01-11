@@ -1,42 +1,34 @@
-name: Build APK Vivo Final
+name: Build APK Final
 on: [push, workflow_dispatch]
-
 jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-
-      - name: Bersihkan Sampah dan Tambah Napas
+      - name: Bersih dan Swap
         run: |
           rm -rf .buildozer
           sudo fallocate -l 4G /swapfile
           sudo chmod 600 /swapfile
           sudo mkswap /swapfile
           sudo swapon /swapfile
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-
       - name: Install Libs
         run: |
           sudo apt-get update
           sudo apt-get install -y autoconf automake libtool pkg-config zlib1g-dev \
           libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
-
       - name: Install Buildozer
         run: pip install Cython==0.29.33 buildozer
-
       - name: Rakit APK
         run: |
           export APP_ALLOW_ROOT=1
           buildozer -v android debug
-        continue-on-error: false
-
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: APK-Jadi-Vivo
+          name: APK-Jadi
           path: bin/*.apk
