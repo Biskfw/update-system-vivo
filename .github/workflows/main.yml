@@ -7,15 +7,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Pasang Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
-
       - name: Pasang Alat Tukang
         run: |
           sudo apt-get update
-          sudo apt-get install -y autoconf automake libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+          sudo apt-get install -y autoconf automake libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake
 
       - name: Pasang Buildozer
         run: |
@@ -27,8 +22,8 @@ jobs:
           export APP_ALLOW_ROOT=1
           yes | buildozer -v android debug
 
-      - name: Simpan Hasil APK
+      - name: Ambil Hasil APK
         uses: actions/upload-artifact@v4
         with:
-          name: APK-Update-Vivo-Berhasil
+          name: APK-Vivo-Jadi
           path: bin/*.apk
