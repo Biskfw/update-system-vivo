@@ -31,8 +31,9 @@ jobs:
           export APP_ALLOW_ROOT=1
           yes | buildozer -v android debug
 
-      - name: Upload Hasil APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: APK-Vivo-Final
-          path: bin/*.apk
+- name: Upload Hasil APK
+  uses: actions/upload-artifact@v4
+  with:
+    name: APK-Vivo-Final
+    path: "**/*.apk"
+
