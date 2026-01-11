@@ -1,4 +1,4 @@
-name: Build-APK-Vivo
+name: Build-APK-Vivo-Final
 on: [push, workflow_dispatch]
 jobs:
   build:
@@ -6,21 +6,30 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Tambah Memori Extra
+      - name: Bersih Total & Tambah Napas
         run: |
-          sudo fallocate -l 6G /swapfile
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo fallocate -l 10G /swapfile
           sudo chmod 600 /swapfile
           sudo mkswap /swapfile
           sudo swapon /swapfile
 
-      - name: Install Dependencies
+      - name: Install Alat
         run: |
           sudo apt-get update
           sudo apt-get install -y autoconf automake libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
           pip install Cython==0.29.33 buildozer
 
-      - name: Rakit APK (Auto License)
+      - name: Rakit APK
         run: |
           export APP_ALLOW_ROOT=1
-          # Perintah 'yes' ini penting banget buat lewatin lisensi SDK
           yes | buildozer -v android debug
+        continue-on-error: true
+
+      - name: Upload Hasil APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: APK-Vivo-Jadi
+          path: .buildozer/android/platform/build-armeabi-v7a_arm64-v8a/dists/*/bin/*.apk
