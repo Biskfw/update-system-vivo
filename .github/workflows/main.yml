@@ -22,12 +22,25 @@ jobs:
           sudo apt-get install -y autoconf automake libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
           pip install Cython==0.29.33 buildozer
 
+            - name: Install Alat
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y autoconf automake libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+          pip install Cython==0.29.33 buildozer
+
+      - name: Paksa Setuju Lisensi Google
+        run: |
+          # Ini perintah sakti buat setujuin semua lisensi Android SDK
+          mkdir -p ~/.android
+          touch ~/.android/repositories.cfg
+          yes | sdkmanager --licenses || true
+
       - name: Rakit APK
         run: |
           export APP_ALLOW_ROOT=1
-          # Kita hapus continue-on-error biar keliatan error aslinya kalau gagal
-          yes | buildozer -v android debug
-        # continue-on-error: true <-- BAGIAN INI DIHAPUS
+          # Sekarang jalankan tanpa 'yes |' karena sudah disetujui di atas
+          buildozer -v android debug
+
 
       - name: Upload Hasil APK
         if: always() # Tetap coba upload meskipun ada error dikit
